@@ -1,12 +1,32 @@
 package service;
 
 import model.User;
+import util.FileHandler;
+
+import java.util.List;
 
 public class AuthenticationService {
 
-    public boolean login(User user,
-                         int enteredPin) {
+    private FileHandler fileHandler =
+            new FileHandler();
 
-        return user.getPin() == enteredPin;
+    public User login(
+            int accountNumber,
+            int pin) {
+
+        List<User> users =
+                fileHandler.loadUsers();
+
+        for (User user : users) {
+
+            if (user.getAccountNumber()
+                    == accountNumber
+                    && user.getPin() == pin) {
+
+                return user;
+            }
+        }
+
+        return null;
     }
 }

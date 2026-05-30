@@ -1,19 +1,25 @@
 package service;
 
-import model.BankAccount;
+import model.User;
+import util.FileHandler;
+
+import java.util.List;
 
 public class ATMService {
 
+    private FileHandler fileHandler =
+            new FileHandler();
+
     public void checkBalance(
-            BankAccount account) {
+            User user) {
 
         System.out.println(
                 "\nCurrent Balance: ₹"
-                        + account.getBalance());
+                        + user.getBalance());
     }
 
     public void deposit(
-            BankAccount account,
+            User user,
             double amount) {
 
         if (amount <= 0) {
@@ -24,12 +30,17 @@ public class ATMService {
             return;
         }
 
-        account.setBalance(
-                account.getBalance() + amount);
+        user.setBalance(
+                user.getBalance()
+                        + amount);
 
-        account.setTransactionHistory(
-                account.getTransactionHistory()
-                        + "\nDeposit: ₹"
+        fileHandler.updateBalance(
+                user.getAccountNumber(),
+                user.getBalance());
+
+        fileHandler.saveTransaction(
+                user.getAccountNumber()
+                        + ",DEPOSIT,"
                         + amount);
 
         System.out.println(
@@ -37,11 +48,11 @@ public class ATMService {
 
         System.out.println(
                 "Updated Balance: ₹"
-                        + account.getBalance());
+                        + user.getBalance());
     }
 
     public void withdraw(
-            BankAccount account,
+            User user,
             double amount) {
 
         if (amount <= 0) {
@@ -52,7 +63,7 @@ public class ATMService {
             return;
         }
 
-        if (amount > account.getBalance()) {
+        if (amount > user.getBalance()) {
 
             System.out.println(
                     "Insufficient Balance.");
@@ -60,12 +71,17 @@ public class ATMService {
             return;
         }
 
-        account.setBalance(
-                account.getBalance() - amount);
+        user.setBalance(
+                user.getBalance()
+                        - amount);
 
-        account.setTransactionHistory(
-                account.getTransactionHistory()
-                        + "\nWithdraw: ₹"
+        fileHandler.updateBalance(
+                user.getAccountNumber(),
+                user.getBalance());
+
+        fileHandler.saveTransaction(
+                user.getAccountNumber()
+                        + ",WITHDRAW,"
                         + amount);
 
         System.out.println(
@@ -73,28 +89,36 @@ public class ATMService {
 
         System.out.println(
                 "Remaining Balance: ₹"
-                        + account.getBalance());
+                        + user.getBalance());
     }
 
-    public void miniStatement(
-            BankAccount account) {
+    public void transactionHistory(
+            User user) {
+
+        List<String> transactions =
+                fileHandler.loadTransactions();
 
         System.out.println(
-                "\n===== MINI STATEMENT =====");
+                "\n===== TRANSACTION HISTORY =====");
 
-        if (account.getTransactionHistory().isEmpty()) {
+        for (String transaction
+                : transactions) {
 
-            System.out.println(
-                    "No transactions available.");
+            String[] data =
+                    transaction.split(",");
+
+            int accountNumber =
+                    Integer.parseInt(
+                            data[0]);
+
+            if (accountNumber
+                    == user.getAccountNumber()) {
+
+                System.out.println(
+                        data[1]
+                                + " ₹"
+                                + data[2]);
+            }
         }
-        else {
-
-            System.out.println(
-                    account.getTransactionHistory());
-        }
-
-        System.out.println(
-                "\nCurrent Balance: ₹"
-                        + account.getBalance());
     }
 }

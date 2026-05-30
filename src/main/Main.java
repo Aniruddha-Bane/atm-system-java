@@ -1,67 +1,64 @@
 package main;
 
-import java.util.Scanner;
-
-import model.BankAccount;
 import model.User;
 import service.ATMService;
 import service.AuthenticationService;
 
+import java.util.Scanner;
+
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(
+            String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
-
-        User user =
-                new User(
-                        "Aniruddha",
-                        1234
-                );
-
-        BankAccount account =
-                new BankAccount(
-                        "Aniruddha",
-                        1001,
-                        5000,
-                        "Savings"
-                );
+        Scanner scanner =
+                new Scanner(System.in);
 
         AuthenticationService auth =
                 new AuthenticationService();
 
-        ATMService atmService =
+        ATMService atm =
                 new ATMService();
 
-        System.out.println(
-                "===== ATM LOGIN =====");
-
         System.out.print(
-                "Enter PIN: ");
+                "Account Number: ");
 
-        int enteredPin =
+        int accountNumber =
                 scanner.nextInt();
 
-        if (!auth.login(
-                user,
-                enteredPin)) {
+        System.out.print(
+                "PIN: ");
+
+        int pin =
+                scanner.nextInt();
+
+        User currentUser =
+                auth.login(
+                        accountNumber,
+                        pin);
+
+        if (currentUser == null) {
 
             System.out.println(
-                    "Invalid PIN.");
-
-            scanner.close();
+                    "Invalid credentials.");
 
             return;
         }
-
-        System.out.println(
-                "\nLogin Successful!");
 
         boolean loggedIn = true;
 
         while (loggedIn) {
 
-            showMenu();
+            System.out.println(
+                    "\n1. Check Balance");
+            System.out.println(
+                    "2. Deposit");
+            System.out.println(
+                    "3. Withdraw");
+            System.out.println(
+                    "4. Transaction History");
+            System.out.println(
+                    "5. Logout");
 
             int choice =
                     scanner.nextInt();
@@ -69,44 +66,36 @@ public class Main {
             switch (choice) {
 
                 case 1:
-
-                    atmService.checkBalance(
-                            account);
-
+                    atm.checkBalance(
+                            currentUser);
                     break;
 
                 case 2:
 
                     System.out.print(
-                            "Enter Deposit Amount: ");
+                            "Amount: ");
 
-                    double depositAmount =
-                            scanner.nextDouble();
-
-                    atmService.deposit(
-                            account,
-                            depositAmount);
+                    atm.deposit(
+                            currentUser,
+                            scanner.nextDouble());
 
                     break;
 
                 case 3:
 
                     System.out.print(
-                            "Enter Withdrawal Amount: ");
+                            "Amount: ");
 
-                    double withdrawAmount =
-                            scanner.nextDouble();
-
-                    atmService.withdraw(
-                            account,
-                            withdrawAmount);
+                    atm.withdraw(
+                            currentUser,
+                            scanner.nextDouble());
 
                     break;
 
                 case 4:
 
-                    atmService.miniStatement(
-                            account);
+                    atm.transactionHistory(
+                            currentUser);
 
                     break;
 
@@ -115,41 +104,17 @@ public class Main {
                     loggedIn = false;
 
                     System.out.println(
-                            "Logged out successfully.");
+                            "Logged out.");
 
                     break;
 
                 default:
 
                     System.out.println(
-                            "Invalid option.");
+                            "Invalid choice.");
             }
         }
 
         scanner.close();
-    }
-
-    public static void showMenu() {
-
-        System.out.println(
-                "\n===== ATM MENU =====");
-
-        System.out.println(
-                "1. Check Balance");
-
-        System.out.println(
-                "2. Deposit");
-
-        System.out.println(
-                "3. Withdraw");
-
-        System.out.println(
-                "4. Mini Statement");
-
-        System.out.println(
-                "5. Logout");
-
-        System.out.print(
-                "Choose option: ");
     }
 }
