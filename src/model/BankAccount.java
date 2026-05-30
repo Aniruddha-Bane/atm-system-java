@@ -7,6 +7,8 @@ public class BankAccount {
     private double balance;
     private String accountType;
 
+    private String transactionHistory = "";
+
     public BankAccount(String accountHolder,
                        int accountNumber,
                        double balance,
@@ -36,5 +38,13 @@ public class BankAccount {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public String getTransactionHistory() {
+        return transactionHistory;
+    }
+
+    public void setTransactionHistory(String transactionHistory) {
+        this.transactionHistory = transactionHistory;
     }
 }

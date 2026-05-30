@@ -2,10 +2,10 @@ package main;
 
 import java.util.Scanner;
 
-import model.User;
 import model.BankAccount;
-import service.AuthenticationService;
+import model.User;
 import service.ATMService;
+import service.AuthenticationService;
 
 public class Main {
 
@@ -14,7 +14,10 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         User user =
-                new User("Aniruddha", 1234);
+                new User(
+                        "Aniruddha",
+                        1234
+                );
 
         BankAccount account =
                 new BankAccount(
@@ -30,15 +33,21 @@ public class Main {
         ATMService atmService =
                 new ATMService();
 
-        System.out.println("===== ATM LOGIN =====");
+        System.out.println(
+                "===== ATM LOGIN =====");
 
-        System.out.print("Enter PIN: ");
+        System.out.print(
+                "Enter PIN: ");
 
-        int enteredPin = scanner.nextInt();
+        int enteredPin =
+                scanner.nextInt();
 
-        if (!auth.login(user, enteredPin)) {
+        if (!auth.login(
+                user,
+                enteredPin)) {
 
-            System.out.println("Invalid PIN.");
+            System.out.println(
+                    "Invalid PIN.");
 
             scanner.close();
 
@@ -46,8 +55,7 @@ public class Main {
         }
 
         System.out.println(
-                "\nLogin Successful!"
-        );
+                "\nLogin Successful!");
 
         boolean loggedIn = true;
 
@@ -55,33 +63,66 @@ public class Main {
 
             showMenu();
 
-            int choice = scanner.nextInt();
+            int choice =
+                    scanner.nextInt();
 
             switch (choice) {
 
                 case 1:
 
                     atmService.checkBalance(
-                            account
-                    );
+                            account);
 
                     break;
 
                 case 2:
 
+                    System.out.print(
+                            "Enter Deposit Amount: ");
+
+                    double depositAmount =
+                            scanner.nextDouble();
+
+                    atmService.deposit(
+                            account,
+                            depositAmount);
+
+                    break;
+
+                case 3:
+
+                    System.out.print(
+                            "Enter Withdrawal Amount: ");
+
+                    double withdrawAmount =
+                            scanner.nextDouble();
+
+                    atmService.withdraw(
+                            account,
+                            withdrawAmount);
+
+                    break;
+
+                case 4:
+
+                    atmService.miniStatement(
+                            account);
+
+                    break;
+
+                case 5:
+
                     loggedIn = false;
 
                     System.out.println(
-                            "Logged out successfully."
-                    );
+                            "Logged out successfully.");
 
                     break;
 
                 default:
 
                     System.out.println(
-                            "Invalid option."
-                    );
+                            "Invalid option.");
             }
         }
 
@@ -91,19 +132,24 @@ public class Main {
     public static void showMenu() {
 
         System.out.println(
-                "\n===== ATM MENU ====="
-        );
+                "\n===== ATM MENU =====");
 
         System.out.println(
-                "1. Check Balance"
-        );
+                "1. Check Balance");
 
         System.out.println(
-                "2. Logout"
-        );
+                "2. Deposit");
+
+        System.out.println(
+                "3. Withdraw");
+
+        System.out.println(
+                "4. Mini Statement");
+
+        System.out.println(
+                "5. Logout");
 
         System.out.print(
-                "Choose option: "
-        );
+                "Choose option: ");
     }
 }
